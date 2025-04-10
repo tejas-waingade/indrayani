@@ -12,21 +12,21 @@ public class TrendingExamEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "rending_upcoming_exams_exam_code")
+	@Column(name = "trending_upcoming_exams_exam_code")
 	private String examCode;
-	@Column(name = "rending_upcoming_exams_type")
+	@Column(name = "trending_upcoming_exams_type")
 
 	private String type;
-	@Column(name = "rending_upcoming_exams_order_no")
+	@Column(name = "trending_upcoming_exams_order_no")
 
 	private Integer orderNo;
-	@Column(name = "rending_upcoming_exams_launch_date")
+	@Column(name = "trending_upcoming_exams_launch_date")
 
 	private LocalDate launchDate;
-	@Column(name = "rending_upcoming_exams_created_at")
+	@Column(name = "trending_upcoming_exams_created_at")
 
 	private LocalDateTime createdAt;
-	@Column(name = "rending_upcoming_exams_created_by")
+	@Column(name = "trending_upcoming_exams_created_by")
 
 	private String createdBy;
 
