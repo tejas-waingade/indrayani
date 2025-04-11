@@ -34,11 +34,11 @@ public class TrendingExamServiceImpl implements TrendingExamService {
 	public TrendingExamDTO findById(Long id) {
 		return repository.findById(id).map(TrendingExamMapper::toDTO).orElse(null);
 	}
-	
+
 	@Override
 	public TrendingExamDTO update(Long id, TrendingExamDTO dto) {
 		TrendingExamEntity existing = repository.findById(id)
-			.orElseThrow(() -> new RuntimeException("TrendingExam not found with id: " + id));
+				.orElseThrow(() -> new RuntimeException("TrendingExam not found with id: " + id));
 
 		existing.setExamCode(dto.getExamCode());
 		existing.setType(dto.getType());

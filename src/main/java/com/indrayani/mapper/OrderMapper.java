@@ -1,12 +1,13 @@
 package com.indrayani.mapper;
 
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+
 import com.indrayani.DTO.OrderDTO;
 import com.indrayani.entity.OrderEntity;
 import com.indrayani.entity.OrderExamMap;
-import org.springframework.stereotype.Service;
 
-import java.util.stream.Collectors;
-/*
 @Service
 public class OrderMapper {
 
@@ -42,5 +43,3 @@ public class OrderMapper {
     }
 }
 
-
-*/

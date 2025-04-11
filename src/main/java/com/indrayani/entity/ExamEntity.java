@@ -14,7 +14,7 @@ public class ExamEntity {
 
 	@Column(name = "exam_code", nullable = false)
 	private String examCode;
-	
+
 	@Column(name = "exam_name", nullable = false)
 	private String examName;
 
@@ -284,5 +284,8 @@ public class ExamEntity {
 	public ExamEntity() {
 		super();
 
+	}
+	public ExamEntity(Long id) {
+	    this.id = id;
 	}
 }
