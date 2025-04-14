@@ -3,6 +3,9 @@ package com.indrayani.entity;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+
+import org.hibernate.annotations.CreationTimestamp;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -20,21 +23,22 @@ public class OrderEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "orders_order_id")
+	@Column(name = "order_id")
 	private String orderId;
-	@Column(name = "orders_user_id")
+	@Column(name = "user_id")
 	private Long userId;
-	@Column(name = "orders_total_amount")
+	@Column(name = "total_amount")
 	private BigDecimal totalAmount;
-	@Column(name = "orders_payable_amount")
+	@Column(name = "payable_amount")
 	private BigDecimal payableAmount;
-	@Column(name = "orders_discount")
+	@Column(name = "discount")
 	private BigDecimal discount;
-	@Column(name = "orders_created_at")
+	@Column(name = "created_at", nullable = false)
+	@CreationTimestamp
 	private LocalDateTime createdAt;
-	@Column(name = "orders_updated_at")
+	@Column(name = "updated_at")
 	private LocalDateTime updatedAt;
-	@Column(name = "orders_updated_by")
+	@Column(name = "updated_by")
 	private String updatedBy;
 
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -1,9 +1,13 @@
 package com.indrayani.entity;
 
 import java.time.LocalDateTime;
+
+import org.hibernate.annotations.CreationTimestamp;
+
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "order_exam_map")
 public class OrderExamMap {
 
 	@Id
@@ -12,7 +16,6 @@ public class OrderExamMap {
 
 	@ManyToOne
 	@JoinColumn(name = "order_id")
-
 	private OrderEntity order;
 
 	@ManyToOne
@@ -21,7 +24,7 @@ public class OrderExamMap {
 
 	@Column(name = "exam_code")
 	private String examCode;
-
+	@CreationTimestamp
 	@Column(name = "created_at")
 	private LocalDateTime createdAt;
 
