@@ -9,7 +9,7 @@ public class OrderDTO {
 	private BigDecimal totalAmount;
 	private BigDecimal payableAmount;
 	private BigDecimal discount;
-	private List<String> examIds;
+	private List<Long> examIds;
 
 	public Long getUserId() {
 		return userId;
@@ -43,16 +43,16 @@ public class OrderDTO {
 		this.discount = discount;
 	}
 
-	public List<String> getExamIds() {
+	public List<Long> getExamIds() {
 		return examIds;
 	}
 
-	public void setExamIds(List<String> list) {
+	public void setExamIds(List<Long> list) {
 		this.examIds = list;
 	}
 
 	public OrderDTO(Long userId, BigDecimal totalAmount, BigDecimal payableAmount, BigDecimal discount,
-			List<String> examIds) {
+			List<Long> examIds) {
 		super();
 		this.userId = userId;
 		this.totalAmount = totalAmount;

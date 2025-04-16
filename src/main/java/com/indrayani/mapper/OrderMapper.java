@@ -1,12 +1,9 @@
 package com.indrayani.mapper;
 
-import java.util.stream.Collectors;
-
 import org.springframework.stereotype.Service;
-
 import com.indrayani.DTO.OrderDTO;
 import com.indrayani.entity.OrderEntity;
-import com.indrayani.entity.OrderExamMap;
+
 
 @Service
 public class OrderMapper {
@@ -19,12 +16,8 @@ public class OrderMapper {
         dto.setTotalAmount(entity.getTotalAmount());
         dto.setPayableAmount(entity.getPayableAmount());
         dto.setDiscount(entity.getDiscount());
-
-        if (entity.getOrderExamMaps() != null) {
-            dto.setExamIds(entity.getOrderExamMaps().stream()
-                .filter(examMap -> examMap != null)
-                .map(OrderExamMap::getExamCode)
-                .collect(Collectors.toList()));
+        if(entity.getOrderExamMaps() != null){
+            dto.setExamIds(entity.getOrderExamMaps().stream().map(orderExamMap -> orderExamMap.getExam().getId()).toList());
         }
 
         return dto;
@@ -42,4 +35,3 @@ public class OrderMapper {
         return entity;
     }
 }
-

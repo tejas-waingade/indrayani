@@ -43,7 +43,8 @@ public class OrderEntity {
 
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<OrderExamMap> orderExamMaps;
-
+	
+	@Column(name = "razorpay_order_id")
 	private String razorpayOrderId;
 
 	public Long getId() {

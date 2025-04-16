@@ -14,18 +14,19 @@ public class OrderExamMap {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "order_id")
 	private OrderEntity order;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "exam_id")
 	private ExamEntity exam;
 
 	@Column(name = "exam_code")
 	private String examCode;
+	
 	@CreationTimestamp
-	@Column(name = "created_at")
+	@Column(name = "created_at",updatable = false)
 	private LocalDateTime createdAt;
 
 	public Long getId() {

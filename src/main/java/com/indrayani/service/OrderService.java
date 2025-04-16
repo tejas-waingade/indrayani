@@ -11,14 +11,12 @@ import com.indrayani.repository.OrderRepository;
 import com.razorpay.Order;
 import com.razorpay.RazorpayClient;
 import com.razorpay.RazorpayException;
-
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.Authentication;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -35,13 +33,10 @@ public class OrderService {
 	private OrderExamMapRepository orderExamMapRepository;
 
 	@Autowired
-	private OrderMapper orderMapper;
+	private ExamRepository examRepository;
 
 	@Autowired
 	private RazorpayClient razorpayClient;
-
-	@Autowired
-	private ExamRepository examRepository;
 
 	@Transactional
 	public OrderEntity createOrder(OrderDTO orderDTO) {
@@ -51,8 +46,9 @@ public class OrderService {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		orderEntity.setUpdatedBy(authentication != null ? authentication.getName() : "System");
 
-		orderEntity.setCreatedAt(LocalDateTime.now());
-		orderEntity.setUpdatedAt(LocalDateTime.now());
+		LocalDateTime now = LocalDateTime.now();
+		orderEntity.setCreatedAt(now);
+		orderEntity.setUpdatedAt(now);
 
 		JSONObject options = new JSONObject();
 		options.put("amount", orderDTO.getPayableAmount().multiply(BigDecimal.valueOf(100)));
@@ -68,18 +64,16 @@ public class OrderService {
 
 		orderEntity = orderRepository.save(orderEntity);
 		final OrderEntity savedOrder = orderEntity;
-		
-		List<OrderExamMap> orderExamMaps = orderDTO.getExamIds().stream().map(id -> Long.parseLong(id)).map(examId -> {
-			ExamEntity exam = examRepository.findById(examId)
-					.orElseThrow(() -> new RuntimeException("Exam not found with id: " + examId));
 
-			OrderExamMap map = new OrderExamMap();
-			map.setOrder(savedOrder);
-			map.setExam(exam);
-			map.setExamCode(exam.getExamCode());
-			map.setCreatedAt(LocalDateTime.now());
-			return map;
-		}).collect(Collectors.toList());
+		List<OrderExamMap> orderExamMaps = orderDTO.getExamIds().stream().map(examId -> examRepository.findById(examId)
+				.orElseThrow(() -> new RuntimeException("Exam not found with id: " + examId))).map(exam -> {
+					OrderExamMap map = new OrderExamMap();
+					map.setOrder(savedOrder);
+					map.setExam(exam);
+					map.setExamCode(exam.getExamCode());
+					map.setCreatedAt(now);
+					return map;
+				}).collect(Collectors.toList());
 
 		orderExamMapRepository.saveAll(orderExamMaps);
 		orderEntity.setOrderExamMaps(orderExamMaps);
@@ -99,5 +93,4 @@ public class OrderService {
 
 		return orderRepository.save(existing);
 	}
-
 }

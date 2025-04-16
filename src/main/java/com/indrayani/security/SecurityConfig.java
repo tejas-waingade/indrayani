@@ -1,6 +1,7 @@
 package com.indrayani.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,7 +29,7 @@ public class SecurityConfig {
 	private JwtAuthFilter authFilter;
 	@Autowired
 	private UserInfoService userInfoService;
-
+	
 	@Bean
 	UserDetailsService userDetailsService() {
 		return userInfoService;
@@ -38,7 +39,7 @@ public class SecurityConfig {
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http.csrf(csrf -> csrf.disable())
 				.authorizeHttpRequests(auth -> auth
-						.requestMatchers("/auth/**", "/users/add","/{id}/**","/users/**", "/categories/**")
+						.requestMatchers("/auth/**", "/users/add", "/{id}/**", "/users/**", "/categories/**")
 						.permitAll().anyRequest().authenticated())
 				.sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authenticationProvider(authenticationProvider())
