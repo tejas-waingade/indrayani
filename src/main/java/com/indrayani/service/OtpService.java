@@ -5,11 +5,13 @@ import org.springframework.stereotype.Service;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
 
-import ch.qos.logback.classic.Logger;
-
 import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.indrayani.repository.UserRepository;
+import com.indrayani.entity.UserEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Service
 public class OtpService {
@@ -20,6 +22,9 @@ public class OtpService {
 	private final Map<String, OtpData> otpMap = new HashMap<>();
 	private final SecureRandom random = new SecureRandom();
 	private final int OTP_LENGTH = 4;
+
+	@Autowired
+	private UserRepository userRepository;
 
 	public String generateOtp(String mobile) {
 		String otp = String.valueOf(generateRandomNumber(OTP_LENGTH));
@@ -60,5 +65,15 @@ public class OtpService {
 				.creator(new PhoneNumber(userPhoneNumber), new PhoneNumber(twilioPhoneNumber), messageBody).create();
 
 		return "OTP Sent Successfully! SID: " + message.getSid();
+	}
+
+	public boolean validateGoogleId(String googleId) {
+		if (googleId == null || googleId.isEmpty()) {
+			return true;
+		}
+
+		UserEntity user = userRepository.findByGoogleId(googleId);
+
+		return user != null;
 	}
 }

@@ -1,6 +1,8 @@
 package com.indrayani.entity;
 
 import java.time.LocalDateTime;
+import java.util.Random;
+import java.util.UUID;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -8,7 +10,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 
 @Entity
@@ -70,6 +71,22 @@ public class UserEntity {
 	private LocalDateTime updatedAt;
 	@Column(name = "google_id")
 	private String googleId;
+
+	@PrePersist
+	public void generateDefaults() {
+		Random random = new Random();
+		int otp = 1000 + random.nextInt(9000);
+
+		this.mobileOtp = String.valueOf(otp);
+		this.emailOtp = String.valueOf(otp);
+		this.mobileOtpGeneratedAt = LocalDateTime.now();
+		this.emailOtpGeneratedAt = LocalDateTime.now();
+		this.createdAt = LocalDateTime.now();
+		this.updatedAt = LocalDateTime.now();
+		if (this.fcmToken == null || this.fcmToken.isEmpty()) {
+			this.fcmToken = UUID.randomUUID().toString();
+		}
+	}
 
 	public Long getId() {
 		return id;

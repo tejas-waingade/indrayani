@@ -16,38 +16,42 @@ import java.util.Optional;
 @Service
 public class UserInfoService implements UserDetailsService {
 
-    private static final Logger logger = LoggerFactory.getLogger(UserInfoService.class);
+	private static final Logger logger = LoggerFactory.getLogger(UserInfoService.class);
 
-    @Autowired
-    private UserRepository userRepository;
+	@Autowired
+	private UserRepository userRepository;
 
-    @Autowired
-    private OtpService otpService;
+	@Autowired
+	private OtpService otpService;
 
-    @Override
-    public UserDetails loadUserByUsername(String mobile) throws UsernameNotFoundException {
-        Optional<UserEntity> userDetail = userRepository.findByMobile(mobile);
-        return userDetail.map(UserInfoDetails::new)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + mobile));
-    }
+	@Override
+	public UserDetails loadUserByUsername(String mobile) throws UsernameNotFoundException {
+		Optional<UserEntity> userDetail = userRepository.findByMobile(mobile);
+		return userDetail.map(UserInfoDetails::new)
+				.orElseThrow(() -> new UsernameNotFoundException("User not found: " + mobile));
+	}
 
-    public String authenticateAndGenerateOtp(AuthRequest authRequest) {
-        Optional<UserEntity> userOptional = userRepository.findByMobile(authRequest.getMobile());
+	public String authenticateAndGenerateOtp(AuthRequest authRequest) {
+		Optional<UserEntity> userOptional = userRepository.findByMobile(authRequest.getMobile());
 
-        if (userOptional.isEmpty()) {
-            logger.warn("User not found with mobile: {}", authRequest.getMobile());
-            return null;
-        }
+		if (userOptional.isEmpty()) {
+			logger.warn("User not found with mobile: {}", authRequest.getMobile());
+			return null;
+		}
 
-        UserEntity user = userOptional.get();
-        String otp = otpService.generateOtp(authRequest.getMobile());
+		UserEntity user = userOptional.get();
+		String otp = otpService.generateOtp(authRequest.getMobile());
 
-        otpService.sendOtp(authRequest.getMobile(), otp);
-        logger.info("OTP sent to mobile: {}", authRequest.getMobile());
-        return otp;
-    }
+		otpService.sendOtp(authRequest.getMobile(), otp);
+		logger.info("OTP sent to mobile: {}", authRequest.getMobile());
+		return otp;
+	}
 
-    public UserEntity findUserByMobile(String mobile) {
-        return userRepository.findByMobile(mobile).orElse(null);
-    }
+	public UserEntity findUserByMobile(String mobile) {
+		return userRepository.findByMobile(mobile).orElse(null);
+	}
+
+	public UserEntity findUserByGoogleId(String googleId) {
+		return null;
+	}
 }

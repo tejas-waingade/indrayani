@@ -8,23 +8,25 @@ public class SignUpRequest {
 
 	@NotEmpty(message = "First name cannot be empty")
 	private String firstName;
-
 	@NotEmpty(message = "Last name cannot be empty")
 	private String lastName;
-
 	@NotEmpty(message = "Email cannot be empty")
 	@Email(message = "Invalid email format")
 	private String email;
-
 	@NotEmpty(message = "Mobile cannot be empty")
 	@Pattern(regexp = "^[0-9]{10}$", message = "Mobile number must be 10 digits")
 	private String mobile;
-
+	@NotEmpty(message = "education cannot be empty")
 	private String education;
+	@NotEmpty(message = "city cannot be empty")
 	private String city;
+	@NotEmpty(message = "district cannot be empty")
 	private String district;
+	@NotEmpty(message = "state cannot be empty")
 	private String state;
+	@NotEmpty(message = "pincode cannot be empty")
 	private String pinCode;
+	@NotEmpty(message = "fcm token cannot be empty")
 	private String fcmToken;
 
 	public String getFirstName() {

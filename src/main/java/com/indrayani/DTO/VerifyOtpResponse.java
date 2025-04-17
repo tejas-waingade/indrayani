@@ -33,14 +33,18 @@ public class VerifyOtpResponse {
 	public static class Data {
 		private String token;
 		private Long user_id;
+		private String googleId;
+		private String email;
 
 		public Data() {
 
 		}
 
-		public Data(String token, Long user_id) {
+		public Data(String token, Long user_id, String googleId, String email) {
 			this.token = token;
 			this.user_id = user_id;
+			this.googleId = googleId;
+			this.email = email;
 		}
 
 		public String getToken() {
@@ -59,6 +63,20 @@ public class VerifyOtpResponse {
 			this.user_id = user_id;
 		}
 
-	}
+		public String getGoogleId() {
+			return googleId;
+		}
 
+		public void setGoogleId(String googleId) {
+			this.googleId = googleId;
+		}
+
+		public String getEmail() {
+			return email;
+		}
+
+		public void setEmail(String email) {
+			this.email = email;
+		}
+	}
 }
