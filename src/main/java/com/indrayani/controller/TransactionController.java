@@ -20,7 +20,7 @@ public class TransactionController {
 		this.transactionService = transactionService;
 	}
 
-	@PostMapping
+	@PostMapping 
 	public ResponseEntity<TransactionDTO> createTransaction(@RequestBody TransactionDTO transactionDto) {
 		TransactionDTO createdTransaction = transactionService.createTransaction(transactionDto);
 		return new ResponseEntity<>(createdTransaction, HttpStatus.CREATED);

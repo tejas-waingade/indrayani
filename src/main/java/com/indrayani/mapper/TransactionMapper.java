@@ -28,7 +28,7 @@ public class TransactionMapper {
                 transactionEntity.getOrderId(),
                 transactionEntity.getPrice(),
                 transactionEntity.getTransactionDate(),
-                transactionEntity.getTransactionStatus(),
+                transactionEntity.getTransactionStatus(), 
                 transactionEntity.getExamCode(),
                 transactionEntity.getCreatedBy() 
         );
