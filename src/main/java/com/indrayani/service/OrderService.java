@@ -41,7 +41,6 @@ public class OrderService {
 	@Transactional
 	public OrderEntity createOrder(OrderDTO orderDTO) {
 		OrderEntity orderEntity = OrderMapper.toEntity(orderDTO);
-		orderEntity.setOrderId(UUID.randomUUID().toString());
 
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		orderEntity.setUpdatedBy(authentication != null ? authentication.getName() : "System");
@@ -53,7 +52,8 @@ public class OrderService {
 		JSONObject options = new JSONObject();
 		options.put("amount", orderDTO.getPayableAmount().multiply(BigDecimal.valueOf(100)));
 		options.put("currency", "INR");
-		options.put("receipt", orderEntity.getOrderId());
+		String shortReceipt = "ORD" + System.currentTimeMillis();
+		options.put("receipt", shortReceipt);
 
 		try {
 			Order razorpayOrder = razorpayClient.orders.create(options);
@@ -65,18 +65,16 @@ public class OrderService {
 		orderEntity = orderRepository.save(orderEntity);
 		final OrderEntity savedOrder = orderEntity;
 
-		List<OrderExamMap> orderExamMaps = orderDTO.getExamIds().stream().map(examId -> examRepository.findById(examId)
-				.orElseThrow(() -> new RuntimeException("Exam not found with id: " + examId))).map(exam -> {
-					OrderExamMap map = new OrderExamMap();
-					map.setOrder(savedOrder);
-					map.setExam(exam);
-					map.setExamCode(exam.getExamCode());
-					map.setCreatedAt(now);
-					return map;
-				}).collect(Collectors.toList());
+		List<OrderExamMap> examMaps = orderDTO.getExamCodes().stream().map(code -> {
+			OrderExamMap map = new OrderExamMap();
+			map.setOrder(savedOrder);
+			map.setExamCode(code);
+			map.setCreatedAt(now);
+			return map;
+		}).toList();
 
-		orderExamMapRepository.saveAll(orderExamMaps);
-		orderEntity.setOrderExamMaps(orderExamMaps);
+		orderExamMapRepository.saveAll(examMaps);
+		orderEntity.setOrderExamMaps(examMaps);
 
 		return orderEntity;
 	}
@@ -90,7 +88,6 @@ public class OrderService {
 		existing.setPayableAmount(dto.getPayableAmount());
 		existing.setDiscount(dto.getDiscount());
 		existing.setUpdatedAt(LocalDateTime.now());
-
 		return orderRepository.save(existing);
 	}
 }

@@ -6,10 +6,11 @@ import java.util.List;
 public class OrderDTO {
 
 	private Long userId;
+	private Long orderId;
 	private BigDecimal totalAmount;
 	private BigDecimal payableAmount;
 	private BigDecimal discount;
-	private List<Long> examIds;
+	private List<String> examCodes;
 
 	public Long getUserId() {
 		return userId;
@@ -43,22 +44,31 @@ public class OrderDTO {
 		this.discount = discount;
 	}
 
-	public List<Long> getExamIds() {
-		return examIds;
+	public List<String> getExamCodes() {
+		return examCodes;
 	}
 
-	public void setExamIds(List<Long> list) {
-		this.examIds = list;
+	public void setExamCodes(List<String> examCodes) {
+		this.examCodes = examCodes;
 	}
 
-	public OrderDTO(Long userId, BigDecimal totalAmount, BigDecimal payableAmount, BigDecimal discount,
-			List<Long> examIds) {
+	public Long getOrderId() {
+		return orderId;
+	}
+
+	public void setOrderId(Long orderId) {
+		this.orderId = orderId;
+	}
+
+	public OrderDTO(Long userId, Long orderId, BigDecimal totalAmount, BigDecimal payableAmount, BigDecimal discount,
+			List<String> examCodes) {
 		super();
 		this.userId = userId;
+		this.orderId = orderId;
 		this.totalAmount = totalAmount;
 		this.payableAmount = payableAmount;
 		this.discount = discount;
-		this.examIds = examIds;
+		this.examCodes = examCodes;
 	}
 
 	public OrderDTO() {

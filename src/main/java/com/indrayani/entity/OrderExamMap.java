@@ -4,29 +4,30 @@ import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "order_exam_map")
+@Table(name = "order_exam_map",uniqueConstraints = {
+		@UniqueConstraint(columnNames= {"order_id", "exam_code"})
+})
 public class OrderExamMap {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	@JsonBackReference
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "order_id")
 	private OrderEntity order;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "exam_id")
-	private ExamEntity exam;
-
 	@Column(name = "exam_code")
 	private String examCode;
-	
+
 	@CreationTimestamp
-	@Column(name = "created_at",updatable = false)
+	@Column(name = "created_at", updatable = false)
 	private LocalDateTime createdAt;
 
 	public Long getId() {
@@ -45,14 +46,6 @@ public class OrderExamMap {
 		this.order = order;
 	}
 
-	public ExamEntity getExam() {
-		return exam;
-	}
-
-	public void setExam(ExamEntity exam) {
-		this.exam = exam;
-	}
-
 	public String getExamCode() {
 		return examCode;
 	}
@@ -69,11 +62,10 @@ public class OrderExamMap {
 		this.createdAt = createdAt;
 	}
 
-	public OrderExamMap(Long id, OrderEntity order, ExamEntity exam, String examCode, LocalDateTime createdAt) {
+	public OrderExamMap(Long id, OrderEntity order, String examCode, LocalDateTime createdAt) {
 		super();
 		this.id = id;
 		this.order = order;
-		this.exam = exam;
 		this.examCode = examCode;
 		this.createdAt = createdAt;
 	}

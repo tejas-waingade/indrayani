@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -22,9 +24,6 @@ public class OrderEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-
-	@Column(name = "order_id")
-	private String orderId;
 	@Column(name = "user_id")
 	private Long userId;
 	@Column(name = "total_amount")
@@ -41,9 +40,10 @@ public class OrderEntity {
 	@Column(name = "updated_by")
 	private String updatedBy;
 
-	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonManagedReference
+	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
 	private List<OrderExamMap> orderExamMaps;
-	
+
 	@Column(name = "razorpay_order_id")
 	private String razorpayOrderId;
 
@@ -53,14 +53,6 @@ public class OrderEntity {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public String getOrderId() {
-		return orderId;
-	}
-
-	public void setOrderId(String orderId) {
-		this.orderId = orderId;
 	}
 
 	public Long getUserId() {
@@ -135,12 +127,11 @@ public class OrderEntity {
 		this.razorpayOrderId = razorpayOrderId;
 	}
 
-	public OrderEntity(Long id, String orderId, Long userId, BigDecimal totalAmount, BigDecimal payableAmount,
-			BigDecimal discount, LocalDateTime createdAt, LocalDateTime updatedAt, String updatedBy,
-			List<OrderExamMap> orderExamMaps, String razorpayOrderId) {
+	public OrderEntity(Long id, Long userId, BigDecimal totalAmount, BigDecimal payableAmount, BigDecimal discount,
+			LocalDateTime createdAt, LocalDateTime updatedAt, String updatedBy, List<OrderExamMap> orderExamMaps,
+			String razorpayOrderId) {
 		super();
 		this.id = id;
-		this.orderId = orderId;
 		this.userId = userId;
 		this.totalAmount = totalAmount;
 		this.payableAmount = payableAmount;

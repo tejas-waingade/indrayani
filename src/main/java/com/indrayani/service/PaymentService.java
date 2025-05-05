@@ -26,7 +26,7 @@ public class PaymentService {
     public Map<String, String> createOrder(int amount, String currency) throws RazorpayException {
         try {
             JSONObject options = new JSONObject();
-            options.put("amount", amount * 100);
+            options.put("amount", amount * 1);
             options.put("currency", currency);
             options.put("receipt", "order_rcptid_11");
 
