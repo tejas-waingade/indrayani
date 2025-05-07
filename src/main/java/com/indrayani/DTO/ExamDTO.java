@@ -1,29 +1,40 @@
 package com.indrayani.DTO;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class ExamDTO {
 
+	private List<Long> categoryIds;
 	private String examCode;
 	private String examName;
 	private String examDesc;
 	private String examType;
 	private int price;
 	private int examDuration;
+	private int totalQuestions;
 	private int totalMarks;
 	private int passingMarks;
-	private int passingPercent;
+	private BigDecimal passingPercent;
 	private String difficultyLevel;
 	private String img;
 	private int rightAns;
 	private int wrongAns;
 	private int skipAns;
 	private Boolean isActive;
-	private int totalQuestions;
 	private LocalDateTime createdAt;
 	private String createdBy;
-	private String updatedBy;
 	private LocalDateTime updatedAt;
+	private String updatedBy;
+
+	public List<Long> getCategoryIds() {
+		return categoryIds;
+	}
+
+	public void setCategoryIds(List<Long> categoryIds) {
+		this.categoryIds = categoryIds;
+	}
 
 	public String getExamCode() {
 		return examCode;
@@ -73,6 +84,14 @@ public class ExamDTO {
 		this.examDuration = examDuration;
 	}
 
+	public int getTotalQuestions() {
+		return totalQuestions;
+	}
+
+	public void setTotalQuestions(int totalQuestions) {
+		this.totalQuestions = totalQuestions;
+	}
+
 	public int getTotalMarks() {
 		return totalMarks;
 	}
@@ -89,11 +108,11 @@ public class ExamDTO {
 		this.passingMarks = passingMarks;
 	}
 
-	public int getPassingPercent() {
+	public BigDecimal getPassingPercent() {
 		return passingPercent;
 	}
 
-	public void setPassingPercent(int passingPercent) {
+	public void setPassingPercent(BigDecimal passingPercent) {
 		this.passingPercent = passingPercent;
 	}
 
@@ -145,14 +164,6 @@ public class ExamDTO {
 		this.isActive = isActive;
 	}
 
-	public int getTotalQuestions() {
-		return totalQuestions;
-	}
-
-	public void setTotalQuestions(int totalQuestions) {
-		this.totalQuestions = totalQuestions;
-	}
-
 	public LocalDateTime getCreatedAt() {
 		return createdAt;
 	}
@@ -169,14 +180,6 @@ public class ExamDTO {
 		this.createdBy = createdBy;
 	}
 
-	public String getUpdatedBy() {
-		return updatedBy;
-	}
-
-	public void setUpdatedBy(String updatedBy) {
-		this.updatedBy = updatedBy;
-	}
-
 	public LocalDateTime getUpdatedAt() {
 		return updatedAt;
 	}
@@ -185,17 +188,27 @@ public class ExamDTO {
 		this.updatedAt = updatedAt;
 	}
 
-	public ExamDTO(String examCode, String examName, String examDesc, String examType, int price, int examDuration,
-			int totalMarks, int passingMarks, int passingPercent, String difficultyLevel, String img, int rightAns,
-			int wrongAns, int skipAns, Boolean isActive, int totalQuestions, LocalDateTime createdAt, String createdBy,
-			String updatedBy, LocalDateTime updatedAt) {
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+
+	public ExamDTO(List<Long> categoryIds, String examCode, String examName, String examDesc, String examType,
+			int price, int examDuration, int totalQuestions, int totalMarks, int passingMarks,
+			BigDecimal passingPercent, String difficultyLevel, String img, int rightAns, int wrongAns, int skipAns,
+			Boolean isActive, LocalDateTime createdAt, String createdBy, LocalDateTime updatedAt, String updatedBy) {
 		super();
+		this.categoryIds = categoryIds;
 		this.examCode = examCode;
 		this.examName = examName;
 		this.examDesc = examDesc;
 		this.examType = examType;
 		this.price = price;
 		this.examDuration = examDuration;
+		this.totalQuestions = totalQuestions;
 		this.totalMarks = totalMarks;
 		this.passingMarks = passingMarks;
 		this.passingPercent = passingPercent;
@@ -205,11 +218,10 @@ public class ExamDTO {
 		this.wrongAns = wrongAns;
 		this.skipAns = skipAns;
 		this.isActive = isActive;
-		this.totalQuestions = totalQuestions;
 		this.createdAt = createdAt;
 		this.createdBy = createdBy;
-		this.updatedBy = updatedBy;
 		this.updatedAt = updatedAt;
+		this.updatedBy = updatedBy;
 	}
 
 	public ExamDTO() {

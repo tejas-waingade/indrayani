@@ -4,16 +4,26 @@ import java.time.LocalDateTime;
 
 public class CategoriesDTO {
 
+	private Long categoryId;
+
 	private String categoryName;
 	private String image;
 	private String description;
-	private String orderNumber;
+	private int orderNumber;
 	private String parentCategory;
 	private LocalDateTime createdAt;
 	private String createdBy;
 	private String updatedBy;
 	private LocalDateTime updatedAt;
 	private Boolean isActive;
+
+	public Long getCategoryId() {
+		return categoryId;
+	}
+
+	public void setCategoryId(Long categoryId) {
+		this.categoryId = categoryId;
+	}
 
 	public String getCategoryName() {
 		return categoryName;
@@ -39,11 +49,11 @@ public class CategoriesDTO {
 		this.description = description;
 	}
 
-	public String getOrderNumber() {
+	public int getOrderNumber() {
 		return orderNumber;
 	}
 
-	public void setOrderNumber(String orderNumber) {
+	public void setOrderNumber(int orderNumber) {
 		this.orderNumber = orderNumber;
 	}
 
@@ -95,11 +105,11 @@ public class CategoriesDTO {
 		this.isActive = isActive;
 	}
 
-	public CategoriesDTO(String categoryName, String image, String description, String orderNumber,
+	public CategoriesDTO(Long categoryId, String categoryName, String image, String description, int orderNumber,
 			String parentCategory, LocalDateTime createdAt, String createdBy, String updatedBy, LocalDateTime updatedAt,
 			Boolean isActive) {
 		super();
-
+		this.categoryId = categoryId;
 		this.categoryName = categoryName;
 		this.image = image;
 		this.description = description;
@@ -114,10 +124,7 @@ public class CategoriesDTO {
 
 	public CategoriesDTO() {
 		super();
-	}
 
-	public Long getId() {
-		return null;
 	}
 
 }

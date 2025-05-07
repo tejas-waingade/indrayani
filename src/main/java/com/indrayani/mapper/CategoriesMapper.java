@@ -21,7 +21,7 @@ public class CategoriesMapper {
         dto.setCreatedBy(entity.getCreatedBy());
         dto.setUpdatedBy(entity.getUpdatedBy());
         dto.setUpdatedAt(entity.getUpdatedAt());
-        dto.setIsActive(entity.getIsActive());
+        dto.setCategoryId(entity.getId());
 
         return dto;
     }
@@ -39,7 +39,7 @@ public class CategoriesMapper {
         entity.setCreatedBy(dto.getCreatedBy());
         entity.setUpdatedBy(dto.getUpdatedBy());
         entity.setUpdatedAt(dto.getUpdatedAt());
-        entity.setIsActive(dto.getIsActive());
+        entity.setId(dto.getCategoryId()); 
 
         return entity;
     }

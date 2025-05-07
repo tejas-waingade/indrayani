@@ -15,6 +15,7 @@ import com.indrayani.repository.CategoriesRepository;
 public class CategoriesService {
 	@Autowired
 	private final CategoriesRepository categoriesRepository;
+	
 	@Autowired
 	private final CategoriesMapper categoriesMapper;
 
@@ -44,11 +45,6 @@ public class CategoriesService {
 
 	public Optional<CategoriesEntity> findByID(Long id) {
 		return categoriesRepository.findById(id);
-
-	}
-
-	public List<CategoriesEntity> getActiveCategories(Boolean active) {
-		return categoriesRepository.getActiveCategories(active);
 
 	}
 

@@ -5,12 +5,14 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -21,22 +23,22 @@ public class CategoriesEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "categories_category_name")
+	@Column(name = "category_name")
 	private String categoryName;
 
 	@Column(name = "image")
 	private String image;
 
-	@Column(name = "categories_description")
+	@Column(name = "description")
 	private String description;
 
 	@Column(name = "order_number")
-	private String orderNumber;
+	private int orderNumber;
 
-	@Column(name = "categories_parent_category")
+	@Column(name = "parent_category")
 	private String parentCategory;
 
-	@Column(name = "categories_created_at")
+	@Column(name = "created_at")
 	private LocalDateTime createdAt;
 
 	@Column(name = "created_by")
@@ -48,11 +50,11 @@ public class CategoriesEntity {
 	@Column(name = "updated_at")
 	private LocalDateTime updatedAt;
 
-	@Column(name = "categories_isActive")
+	@Column(name = "isActive")
 	private Boolean isActive;
 
-	@JsonIgnore
 	@ManyToMany(mappedBy = "categories")
+	@JsonIgnore
 	private List<ExamEntity> exams;
 
 	public Long getId() {
@@ -87,11 +89,11 @@ public class CategoriesEntity {
 		this.description = description;
 	}
 
-	public String getOrderNumber() {
+	public int getOrderNumber() {
 		return orderNumber;
 	}
 
-	public void setOrderNumber(String orderNumber) {
+	public void setOrderNumber(int orderNumber) {
 		this.orderNumber = orderNumber;
 	}
 
@@ -151,7 +153,7 @@ public class CategoriesEntity {
 		this.exams = exams;
 	}
 
-	public CategoriesEntity(Long id, String categoryName, String image, String description, String orderNumber,
+	public CategoriesEntity(Long id, String categoryName, String image, String description, int orderNumber,
 			String parentCategory, LocalDateTime createdAt, String createdBy, String updatedBy, LocalDateTime updatedAt,
 			Boolean isActive, List<ExamEntity> exams) {
 		super();
@@ -172,5 +174,4 @@ public class CategoriesEntity {
 	public CategoriesEntity() {
 		super();
 	}
-
 }

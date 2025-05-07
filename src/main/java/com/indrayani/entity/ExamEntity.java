@@ -1,5 +1,6 @@
 package com.indrayani.entity;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import jakarta.persistence.*;
@@ -18,62 +19,62 @@ public class ExamEntity {
 	@Column(name = "exam_name", nullable = false)
 	private String examName;
 
-	@Column(name = "exams_desc")
+	@Column(name = "exam_desc")
 	private String examDesc;
 
-	@Column(name = "exams_type")
+	@Column(name = "exam_type")
 	private String examType;
 
-	@Column(name = "exams_price")
+	@Column(name = "price")
 	private int price;
 
-	@Column(name = "exams_duration")
+	@Column(name = "duration")
 	private int examDuration;
 
-	@Column(name = "exams_total_marks")
-	private int totalMarks;
-
-	@Column(name = "exams_passing_marks")
-	private int passingMarks;
-
-	@Column(name = "exams_passing_percent")
-	private int passingPercent;
-
-	@Column(name = "exams_difficulty_level")
-	private String difficultyLevel;
-
-	@Column(name = "exams_img")
-	private String img;
-
-	@Column(name = "exams_right_ans")
-	private int rightAns;
-
-	@Column(name = "exams_wrong_ans")
-	private int wrongAns;
-
-	@Column(name = "exams_skip_ans")
-	private int skipAns;
-
-	@Column(name = "exams_is_active")
-	private Boolean isActive;
-
-	@Column(name = "exams_total_questions")
+	@Column(name = "total_questions")
 	private int totalQuestions;
 
-	@Column(name = "exams_created_at")
+	@Column(name = "total_marks")
+	private int totalMarks;
+
+	@Column(name = "passing_marks")
+	private int passingMarks;
+
+	@Column(name = "passing_percent")
+	private BigDecimal passingPercent;
+
+	@Column(name = "difficulty_level")
+	private String difficultyLevel;
+
+	@Column(name = "img")
+	private String img;
+
+	@Column(name = "right_ans")
+	private int rightAns;
+
+	@Column(name = "wrong_ans")
+	private int wrongAns;
+
+	@Column(name = "skip_ans")
+	private int skipAns;
+
+	@Column(name = "is_active")
+	private Boolean isActive;
+
+	@Column(name = "created_at")
 	private LocalDateTime createdAt;
 
-	@Column(name = "exams_created_by")
+	@Column(name = "created_by")
 	private String createdBy;
 
-	@Column(name = "exams_updated_by")
-	private String updatedBy;
-
-	@Column(name = "exams_updated_at")
+	@Column(name = "updated_at")
 	private LocalDateTime updatedAt;
 
+	@Column(name = "updated_by")
+	private String updatedBy;
+
 	@ManyToMany
-	@JoinTable(name = "exam_category_mapping", joinColumns = @JoinColumn(name = "exam_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
+	@JoinTable(name = "exam_categories", joinColumns = @JoinColumn(name = "exam_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
 	private List<CategoriesEntity> categories;
 
 	public Long getId() {
@@ -132,6 +133,14 @@ public class ExamEntity {
 		this.examDuration = examDuration;
 	}
 
+	public int getTotalQuestions() {
+		return totalQuestions;
+	}
+
+	public void setTotalQuestions(int totalQuestions) {
+		this.totalQuestions = totalQuestions;
+	}
+
 	public int getTotalMarks() {
 		return totalMarks;
 	}
@@ -148,11 +157,11 @@ public class ExamEntity {
 		this.passingMarks = passingMarks;
 	}
 
-	public int getPassingPercent() {
+	public BigDecimal getPassingPercent() {
 		return passingPercent;
 	}
 
-	public void setPassingPercent(int passingPercent) {
+	public void setPassingPercent(BigDecimal passingPercent) {
 		this.passingPercent = passingPercent;
 	}
 
@@ -204,14 +213,6 @@ public class ExamEntity {
 		this.isActive = isActive;
 	}
 
-	public int getTotalQuestions() {
-		return totalQuestions;
-	}
-
-	public void setTotalQuestions(int totalQuestions) {
-		this.totalQuestions = totalQuestions;
-	}
-
 	public LocalDateTime getCreatedAt() {
 		return createdAt;
 	}
@@ -228,20 +229,20 @@ public class ExamEntity {
 		this.createdBy = createdBy;
 	}
 
-	public String getUpdatedBy() {
-		return updatedBy;
-	}
-
-	public void setUpdatedBy(String updatedBy) {
-		this.updatedBy = updatedBy;
-	}
-
 	public LocalDateTime getUpdatedAt() {
 		return updatedAt;
 	}
 
 	public void setUpdatedAt(LocalDateTime updatedAt) {
 		this.updatedAt = updatedAt;
+	}
+
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
 	}
 
 	public List<CategoriesEntity> getCategories() {
@@ -253,9 +254,10 @@ public class ExamEntity {
 	}
 
 	public ExamEntity(Long id, String examCode, String examName, String examDesc, String examType, int price,
-			int examDuration, int totalMarks, int passingMarks, int passingPercent, String difficultyLevel, String img,
-			int rightAns, int wrongAns, int skipAns, Boolean isActive, int totalQuestions, LocalDateTime createdAt,
-			String createdBy, String updatedBy, LocalDateTime updatedAt, List<CategoriesEntity> categories) {
+			int examDuration, int totalQuestions, int totalMarks, int passingMarks, BigDecimal passingPercent,
+			String difficultyLevel, String img, int rightAns, int wrongAns, int skipAns, Boolean isActive,
+			LocalDateTime createdAt, String createdBy, LocalDateTime updatedAt, String updatedBy,
+			List<CategoriesEntity> categories) {
 		super();
 		this.id = id;
 		this.examCode = examCode;
@@ -264,6 +266,7 @@ public class ExamEntity {
 		this.examType = examType;
 		this.price = price;
 		this.examDuration = examDuration;
+		this.totalQuestions = totalQuestions;
 		this.totalMarks = totalMarks;
 		this.passingMarks = passingMarks;
 		this.passingPercent = passingPercent;
@@ -273,19 +276,14 @@ public class ExamEntity {
 		this.wrongAns = wrongAns;
 		this.skipAns = skipAns;
 		this.isActive = isActive;
-		this.totalQuestions = totalQuestions;
 		this.createdAt = createdAt;
 		this.createdBy = createdBy;
-		this.updatedBy = updatedBy;
 		this.updatedAt = updatedAt;
+		this.updatedBy = updatedBy;
 		this.categories = categories;
 	}
 
 	public ExamEntity() {
 		super();
-
-	}
-	public ExamEntity(Long id) {
-	    this.id = id;
 	}
 }
