@@ -7,10 +7,13 @@ public class TransactionDTO {
 	private String transactionId;
 	private String orderId;
 	private Double price;
+	private String banktransId;
 	private LocalDateTime transactionDate;
 	private String transactionStatus;
-	private String examCode;
+	private LocalDateTime createdAt;
 	private String createdBy;
+	private LocalDateTime updatedAt;
+	private String updatedBy;
 
 	public String getTransactionId() {
 		return transactionId;
@@ -36,6 +39,14 @@ public class TransactionDTO {
 		this.price = price;
 	}
 
+	public String getBanktransId() {
+		return banktransId;
+	}
+
+	public void setBanktransId(String banktransId) {
+		this.banktransId = banktransId;
+	}
+
 	public LocalDateTime getTransactionDate() {
 		return transactionDate;
 	}
@@ -52,12 +63,12 @@ public class TransactionDTO {
 		this.transactionStatus = transactionStatus;
 	}
 
-	public String getExamCode() {
-		return examCode;
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
 	}
 
-	public void setExamCode(String examCode) {
-		this.examCode = examCode;
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
 	}
 
 	public String getCreatedBy() {
@@ -68,20 +79,41 @@ public class TransactionDTO {
 		this.createdBy = createdBy;
 	}
 
-	public TransactionDTO(String transactionId, String orderId, Double price, LocalDateTime transactionDate,
-			String transactionStatus, String examCode, String createdBy) {
+	public LocalDateTime getUpdatedAt() {
+		return updatedAt;
+	}
+
+	public void setUpdatedAt(LocalDateTime updatedAt) {
+		this.updatedAt = updatedAt;
+	}
+
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+
+	public TransactionDTO(String transactionId, String orderId, Double price, String banktransId,
+			LocalDateTime transactionDate, String transactionStatus, LocalDateTime createdAt, String createdBy,
+			LocalDateTime updatedAt, String updatedBy) {
 		super();
 		this.transactionId = transactionId;
 		this.orderId = orderId;
 		this.price = price;
+		this.banktransId = banktransId;
 		this.transactionDate = transactionDate;
 		this.transactionStatus = transactionStatus;
-		this.examCode = examCode;
+		this.createdAt = createdAt;
 		this.createdBy = createdBy;
+		this.updatedAt = updatedAt;
+		this.updatedBy = updatedBy;
 	}
 
 	public TransactionDTO() {
 		super();
+
 	}
 
 }

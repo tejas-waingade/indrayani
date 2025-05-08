@@ -13,7 +13,7 @@ import jakarta.persistence.Table;
 public class TransactionEntity {
 
 	@Id
-	@GeneratedValue(strategy =GenerationType.IDENTITY) 
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 
 	@Column(name = "id")
 	private Long id;
@@ -27,17 +27,26 @@ public class TransactionEntity {
 	@Column(nullable = false)
 	private Double price;
 
+	@Column(name = "banktrans_id", unique = true, nullable = false)
+	private String banktransId;
+
 	@Column(name = "transaction_date", nullable = false)
 	private LocalDateTime transactionDate;
 
 	@Column(name = "transaction_status", nullable = false)
 	private String transactionStatus;
 
-	@Column(name = "exam_code", nullable = false)
-	private String examCode;
+	@Column(name = "created_at", nullable = false)
+	private LocalDateTime createdAt;
 
 	@Column(name = "created_by", nullable = false)
 	private String createdBy;
+
+	@Column(name = "updated_at", nullable = false)
+	private LocalDateTime updatedAt;
+
+	@Column(name = "updated_by", nullable = false)
+	private String updatedBy;
 
 	public Long getId() {
 		return id;
@@ -71,6 +80,14 @@ public class TransactionEntity {
 		this.price = price;
 	}
 
+	public String getBanktransId() {
+		return banktransId;
+	}
+
+	public void setBanktransId(String banktransId) {
+		this.banktransId = banktransId;
+	}
+
 	public LocalDateTime getTransactionDate() {
 		return transactionDate;
 	}
@@ -87,12 +104,12 @@ public class TransactionEntity {
 		this.transactionStatus = transactionStatus;
 	}
 
-	public String getExamCode() {
-		return examCode;
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
 	}
 
-	public void setExamCode(String examCode) {
-		this.examCode = examCode;
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
 	}
 
 	public String getCreatedBy() {
@@ -103,21 +120,42 @@ public class TransactionEntity {
 		this.createdBy = createdBy;
 	}
 
-	public TransactionEntity(Long id, String transactionId, String orderId, Double price, LocalDateTime transactionDate,
-			String transactionStatus, String examCode, String createdBy) {
+	public LocalDateTime getUpdatedAt() {
+		return updatedAt;
+	}
+
+	public void setUpdatedAt(LocalDateTime updatedAt) {
+		this.updatedAt = updatedAt;
+	}
+
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+
+	public TransactionEntity(Long id, String transactionId, String orderId, Double price, String banktransId,
+			LocalDateTime transactionDate, String transactionStatus, LocalDateTime createdAt, String createdBy,
+			LocalDateTime updatedAt, String updatedBy) {
 		super();
 		this.id = id;
 		this.transactionId = transactionId;
 		this.orderId = orderId;
 		this.price = price;
+		this.banktransId = banktransId;
 		this.transactionDate = transactionDate;
 		this.transactionStatus = transactionStatus;
-		this.examCode = examCode;
+		this.createdAt = createdAt;
 		this.createdBy = createdBy;
+		this.updatedAt = updatedAt;
+		this.updatedBy = updatedBy;
 	}
 
 	public TransactionEntity() {
 		super();
+
 	}
 
 }
