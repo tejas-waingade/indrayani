@@ -45,10 +45,11 @@ public class ExamMapper {
         dto.setUpdatedAt(entity.getUpdatedAt());
 
         if (entity.getCategories() != null) {
-            List<Long> categoryIds = entity.getCategories().stream()
-                .map(CategoriesEntity::getId)
-                .collect(Collectors.toList());
-            dto.setCategoryIds(categoryIds); 
+            dto.setCategoryIds(
+                entity.getCategories().stream()
+                    .map(CategoriesEntity::getId)
+                    .collect(Collectors.toList())
+            );
         }
 
         return dto;
@@ -80,13 +81,11 @@ public class ExamMapper {
         entity.setUpdatedAt(dto.getUpdatedAt());
 
         if (dto.getCategoryIds() != null && !dto.getCategoryIds().isEmpty()) {
-            List<CategoriesEntity> categories = dto.getCategoryIds().stream()
-                .map(categoryId -> categoriesRepository.findById(categoryId)
-                    .orElseThrow(() -> new RuntimeException("Category not found with ID: " + categoryId)))
-                .collect(Collectors.toList());
+            List<CategoriesEntity> categories = categoriesRepository.findAllById(dto.getCategoryIds());
             entity.setCategories(categories);
         }
 
         return entity;
     }
+
 }

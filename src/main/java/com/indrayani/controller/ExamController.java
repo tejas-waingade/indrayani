@@ -47,10 +47,9 @@ public class ExamController {
 	}
 
 	@PostMapping
-	public ResponseEntity<ExamDTO> addExam(@RequestBody ExamDTO examDTO) {
-		ExamDTO ExamDTOObj = examService.addExam(examDTO);
-		return new ResponseEntity<>(ExamDTOObj, HttpStatus.CREATED);
-
+	public ResponseEntity<ExamEntity> createExam(@RequestBody ExamDTO examDTO) {
+		ExamEntity savedExam = examService.createExam(examDTO);
+		return new ResponseEntity<>(savedExam, HttpStatus.CREATED);
 	}
 
 	@PutMapping("/{id}")
@@ -79,6 +78,5 @@ public class ExamController {
 		}
 
 	}
-
 
 }

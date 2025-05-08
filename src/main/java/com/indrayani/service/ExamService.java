@@ -43,6 +43,15 @@ public class ExamService {
 		return examRepository.findById(id).map(examMapper::toDTO).orElse(null);
 	}
 
+	public ExamEntity createExam(ExamDTO dto) {
+		ExamEntity exam = examMapper.toEntity(dto);
+		exam.setCreatedAt(LocalDateTime.now());
+		List<CategoriesEntity> categories = categoriesRepository.findAllById(dto.getCategoryIds());
+		exam.setCategories(categories);
+
+		return examRepository.save(exam);
+	}
+
 	@Transactional
 	public ExamDTO addExam(ExamDTO examDTO) {
 		ExamEntity examEntity = examMapper.toEntity(examDTO);

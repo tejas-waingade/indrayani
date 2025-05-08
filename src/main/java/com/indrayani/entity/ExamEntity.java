@@ -74,7 +74,7 @@ public class ExamEntity {
 	private String updatedBy;
 
 	@ManyToMany
-	@JoinTable(name = "exam_categories", joinColumns = @JoinColumn(name = "exam_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
+	@JoinTable(name = "exam_cat_map", joinColumns = @JoinColumn(name = "exam_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
 	private List<CategoriesEntity> categories;
 
 	public Long getId() {
