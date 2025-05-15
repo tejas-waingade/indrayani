@@ -34,12 +34,10 @@ public class TransactionServiceImpl implements TransactionService {
 		transactionDto.setTransactionId(UUID.randomUUID().toString());
 		transactionDto.setOrderId(generatedOrderId);
 		transactionDto.setBanktransId("BANK-" + UUID.randomUUID().toString().substring(0, 6));
-
 		LocalDateTime now = LocalDateTime.now();
 		transactionDto.setTransactionDate(now);
 		transactionDto.setCreatedAt(now);
 		transactionDto.setUpdatedAt(now);
-
 		TransactionEntity transactionEntity = transactionMapper.toEntity(transactionDto);
 		TransactionEntity savedTransactionEntity = transactionRepository.save(transactionEntity);
 		return transactionMapper.toDTO(savedTransactionEntity);
