@@ -14,5 +14,6 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 	@Query("SELECT u FROM UserEntity u WHERE u.mobile = :mobile")
 	Optional<UserEntity> findByMobile(String mobile);
 
-	UserEntity findByGoogleId(String googleId);
+	Optional<UserEntity> findByGoogleId(String googleId);
+
 }

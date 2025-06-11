@@ -31,7 +31,7 @@ public class SecurityConfig {
 	private UserInfoService userInfoService;
 	
 	@Bean
-	UserDetailsService userDetailsService() {
+	UserDetailsService userDetailsService() { 
 		return userInfoService;
 	}
 

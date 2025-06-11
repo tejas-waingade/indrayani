@@ -1,17 +1,18 @@
 package com.indrayani.service;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import com.indrayani.entity.UserEntity;
+import com.indrayani.repository.UserRepository;
+import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
+import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
-import java.util.HashMap;
-import java.util.Map;
-
-import com.indrayani.repository.UserRepository;
-import com.indrayani.entity.UserEntity;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 public class OtpService {
@@ -19,61 +20,74 @@ public class OtpService {
 	@Value("${twilio.phone.number}")
 	private String twilioPhoneNumber;
 
-	private final Map<String, OtpData> otpMap = new HashMap<>();
-	private final SecureRandom random = new SecureRandom();
-	private final int OTP_LENGTH = 4;
+	@Value("${twilio.account.sid}")
+	private String accountSid;
+
+	@Value("${twilio.auth.token}")
+	private String authToken;
 
 	@Autowired
 	private UserRepository userRepository;
 
-	public String generateOtp(String mobile) {
-		String otp = String.valueOf(generateRandomNumber(OTP_LENGTH));
-		otpMap.put(mobile, new OtpData(otp));
-		return otp;
+	private final SecureRandom random = new SecureRandom();
+	private final int OTP_LENGTH = 4;
+
+	@PostConstruct
+	public void init() {
+		Twilio.init(accountSid, authToken);
 	}
 
-	public boolean validateOtp(String mobile, String otp) {
-		OtpData otpData = otpMap.get(mobile);
-		if (otpData == null) {
-			return false;
+	private String generateOtpCode() {
+		int min = (int) Math.pow(10, OTP_LENGTH - 1);
+		int max = (int) Math.pow(10, OTP_LENGTH) - 1;
+		return String.valueOf(random.nextInt(max - min + 1) + min);
+	}
+
+	public String regenerateAndSendOtpToMobileUser(String mobile) {
+		Optional<UserEntity> optionalUser = userRepository.findByMobile(mobile);
+
+		if (optionalUser.isPresent()) {
+			UserEntity user = optionalUser.get();
+
+			String newOtp = generateOtpCode();
+			user.setMobileOtp(newOtp);
+			user.setMobileOtpGeneratedAt(LocalDateTime.now());
+			userRepository.save(user);
+
+			String messageBody = "Your OTP is: " + newOtp;
+			Message message = Message
+					.creator(new PhoneNumber(user.getMobile()), new PhoneNumber(twilioPhoneNumber), messageBody)
+					.create();
+
+			return "OTP sent to existing user. SID: " + message.getSid();
+		} else {
+			return "User not found with mobile: " + mobile;
 		}
-		boolean isValid = otpData.otp.equals(otp);
-		if (isValid) {
-			otpMap.remove(mobile);
+	}
+
+	public boolean validateUserOtp(String mobile, String otp) {
+		Optional<UserEntity> optionalUser = userRepository.findByMobile(mobile);
+		if (optionalUser.isPresent()) {
+			UserEntity user = optionalUser.get();
+			return otp.equals(user.getMobileOtp());
 		}
-		return isValid;
-	}
-
-	private int generateRandomNumber(int length) {
-		int min = (int) Math.pow(10, length - 1);
-		int max = (int) Math.pow(10, length) - 1;
-		return random.nextInt(max - min + 1) + min;
-	}
-
-	private static class OtpData {
-		String otp;
-
-		public OtpData(String otp) {
-			this.otp = otp;
-		}
-	}
-
-	public String sendOtp(String userPhoneNumber, String otp) {
-		String messageBody = "Your OTP is: " + otp;
-
-		Message message = Message
-				.creator(new PhoneNumber(userPhoneNumber), new PhoneNumber(twilioPhoneNumber), messageBody).create();
-
-		return "OTP Sent Successfully! SID: " + message.getSid();
+		return false;
 	}
 
 	public boolean validateGoogleId(String googleId) {
 		if (googleId == null || googleId.isEmpty()) {
 			return true;
 		}
+		return userRepository.findByGoogleId(googleId).isPresent();
+	}
 
-		UserEntity user = userRepository.findByGoogleId(googleId);
+	public String generateOtp(String mobile) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-		return user != null;
+	public void sendOtp(String mobile, String otp) {
+		// TODO Auto-generated method stub
+
 	}
 }

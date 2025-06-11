@@ -3,14 +3,15 @@ package com.indrayani.DTO;
 public class OtpResponse {
 
 	private String message;
-	private String otp;
+	private String token;
 
 	public OtpResponse() {
 	}
 
-	public OtpResponse(String message, String otp) {
+	public OtpResponse(String message, String token) {
 		this.message = message;
-		this.otp = otp;
+		this.token = token;
+
 	}
 
 	public String getMessage() {
@@ -21,11 +22,11 @@ public class OtpResponse {
 		this.message = message;
 	}
 
-	public String getOtp() {
-		return otp;
+	public String getToken() {
+		return token;
 	}
 
-	public void setOtp(String otp) {
-		this.otp = otp;
+	public void setToken(String token) {
+		this.token = token;
 	}
 }

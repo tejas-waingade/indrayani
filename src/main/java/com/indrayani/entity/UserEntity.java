@@ -101,7 +101,21 @@ public class UserEntity {
 	}
 
 	public void setMobile(String mobile) {
-		this.mobile = mobile;
+		if (mobile == null || mobile.isEmpty()) {
+			throw new IllegalArgumentException("Mobile number cannot be null or empty");
+		}
+
+		String cleaned = mobile.replaceAll("\\D+", "");
+
+		if (cleaned.length() == 12 && cleaned.startsWith("91")) {
+			cleaned = cleaned.substring(2);
+		}
+
+		if (cleaned.length() == 10) {
+			this.mobile = "+91" + cleaned;
+		} else {
+			throw new IllegalArgumentException("Invalid mobile number. Must be 10 digits or start with +91");
+		}
 	}
 
 	public String getEmail() {
