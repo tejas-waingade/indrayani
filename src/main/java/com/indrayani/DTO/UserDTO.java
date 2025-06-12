@@ -2,11 +2,20 @@ package com.indrayani.DTO;
 
 import java.time.LocalDateTime;
 
-public class UserDTO {
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 
+public class UserDTO {
+	@NotBlank(message = "Mobile number is required")
+	@Pattern(regexp = "^(\\+91)?[6-9]\\d{9}$", message = "Invalid Indian mobile number format. Must be 10 digits or start with +91 followed by 10 digits.")
 	private String mobile;
+	@NotBlank(message = "Email is required")
+	@Email(message = "Invalid email format")
 	private String email;
+	@NotBlank(message = "First name is required")
 	private String firstName;
+	@NotBlank(message = "Last name is required")
 	private String lastName;
 	private String education;
 	private String optedClasses;
@@ -272,5 +281,4 @@ public class UserDTO {
 	public Long getId() {
 		return null;
 	}
-
 }

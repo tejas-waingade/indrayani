@@ -31,32 +31,33 @@ public class UserAuthController {
 		String mobile = authRequest.getMobile();
 
 		if (mobile == null || mobile.trim().isEmpty()) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-					.body(new OtpResponse("Mobile number is required", null));
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new OtpResponse("Mobile number is required"));
 		}
 
 		try {
-			String formattedMobile = formatMobile(mobile);
+			String otpResult = otpService.regenerateAndSendOtpToMobileUser(mobile);
 
-			String result = otpService.regenerateAndSendOtpToMobileUser(formattedMobile);
-
-			if (result.startsWith("OTP sent")) {
-				UserEntity user = userInfoService.findUserByMobile(formattedMobile);
+			if (otpResult != null && otpResult.startsWith("OTP sent")) {
+				UserEntity user = userInfoService.findUserByMobile(mobile);
 
 				if (user == null) {
-					return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new OtpResponse("User not found", null));
+					return ResponseEntity.status(HttpStatus.NOT_FOUND)
+							.body(new OtpResponse("User not found after OTP generation"));
 				}
 
-				String token = jwtService.generateToken(formattedMobile);
-				String responseMessage = String.format("OTP sent successfully. UserId: %d", user.getId());
+				String token = jwtService.generateToken(user.getMobile());
+				String responseMessage = String.format("OTP sent successfully. User ID: %d", user.getId());
 
 				return ResponseEntity.ok(new OtpResponse(responseMessage, token));
 			} else {
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new OtpResponse(result, null));
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new OtpResponse(otpResult));
 			}
 
 		} catch (IllegalArgumentException e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new OtpResponse(e.getMessage(), null));
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new OtpResponse(e.getMessage()));
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(new OtpResponse("An unexpected error occurred during login: " + e.getMessage()));
 		}
 	}
 
@@ -66,78 +67,61 @@ public class UserAuthController {
 			return ResponseEntity.badRequest().body(new VerifyOtpResponse("Request body is missing", null));
 		}
 
-		if (authRequest.getOtp() != null && !authRequest.getOtp().isEmpty()) {
+		if (authRequest.getOtp() != null && !authRequest.getOtp().isEmpty() && authRequest.getMobile() != null
+				&& !authRequest.getMobile().isEmpty()) {
 			return handleMobileOtpVerification(authRequest);
 		} else if (authRequest.getGoogleId() != null && !authRequest.getGoogleId().isEmpty()) {
 			return handleGoogleIdVerification(authRequest);
 		} else {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-					.body(new VerifyOtpResponse("Invalid request: OTP or Google ID is required", null));
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+					new VerifyOtpResponse("Invalid request: Mobile number and OTP, or Google ID is required", null));
 		}
 	}
 
 	private ResponseEntity<VerifyOtpResponse> handleMobileOtpVerification(AuthRequest authRequest) {
-		String formattedMobile;
+		String mobile = authRequest.getMobile();
+
 		try {
-			formattedMobile = formatMobile(authRequest.getMobile());
+			boolean isOtpValid = otpService.validateUserOtp(mobile, authRequest.getOtp());
+
+			if (isOtpValid) {
+				UserEntity user = userInfoService.findUserByMobile(mobile);
+
+				if (user == null) {
+					return ResponseEntity.status(HttpStatus.NOT_FOUND)
+							.body(new VerifyOtpResponse("User not found after OTP verification", null));
+				}
+
+				user.setIsMobileVerified(true);
+
+				String token = jwtService.generateToken(user.getMobile());
+				VerifyOtpResponse.Data data = new VerifyOtpResponse.Data(token, user.getId(), user.getGoogleId(),
+						user.getEmail());
+
+				return ResponseEntity.ok(new VerifyOtpResponse("Sign in successful", data));
+			} else {
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new VerifyOtpResponse("Invalid OTP", null));
+			}
 		} catch (IllegalArgumentException e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new VerifyOtpResponse(e.getMessage(), null));
-		}
-
-		boolean isOtpValid = otpService.validateUserOtp(formattedMobile, authRequest.getOtp());
-
-		if (isOtpValid) {
-			UserEntity user = userInfoService.findUserByMobile(formattedMobile);
-
-			if (user == null) {
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new VerifyOtpResponse("User not found", null));
-			}
-
-			String token = jwtService.generateToken(formattedMobile);
-			VerifyOtpResponse.Data data = new VerifyOtpResponse.Data(token, user.getId(), user.getGoogleId(),
-					user.getEmail());
-
-			return ResponseEntity.ok(new VerifyOtpResponse("Sign in successful", data));
-		} else {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new VerifyOtpResponse("Invalid OTP", null));
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new VerifyOtpResponse(
+					"An unexpected error occurred during OTP verification: " + e.getMessage(), null));
 		}
 	}
 
 	private ResponseEntity<VerifyOtpResponse> handleGoogleIdVerification(AuthRequest authRequest) {
-		boolean isValid = otpService.validateGoogleId(authRequest.getGoogleId());
+		UserEntity user = userInfoService.findUserByGoogleId(authRequest.getGoogleId());
 
-		if (isValid) {
-			UserEntity user = userInfoService.findUserByGoogleId(authRequest.getGoogleId());
-
-			if (user == null) {
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new VerifyOtpResponse("User not found", null));
-			}
-
+		if (user != null) {
 			String token = jwtService.generateToken(user.getMobile());
 			VerifyOtpResponse.Data data = new VerifyOtpResponse.Data(token, user.getId(), user.getGoogleId(),
 					user.getEmail());
 
-			return ResponseEntity.ok(new VerifyOtpResponse("Sign in successful", data));
+			return ResponseEntity.ok(new VerifyOtpResponse("Sign in successful with Google ID", data));
 		} else {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-					.body(new VerifyOtpResponse("Invalid Google ID", null));
-		}
-	}
-
-	private String formatMobile(String mobile) {
-		if (mobile == null)
-			throw new IllegalArgumentException("Mobile number is null");
-
-		String cleaned = mobile.replaceAll("[^\\d]", "");
-
-		if (cleaned.length() == 12 && cleaned.startsWith("91")) {
-			cleaned = cleaned.substring(2);
-		}
-
-		if (cleaned.length() == 10) {
-			return "+91" + cleaned;
-		} else {
-			throw new IllegalArgumentException("Invalid mobile number. Enter 10 digits or +91XXXXXXXXXX");
+					.body(new VerifyOtpResponse("Invalid Google ID or User not found with this Google ID", null));
 		}
 	}
 }

@@ -10,82 +10,101 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "users")
-
 public class UserEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "mobile")
+	@Column(name = "mobile", unique = true)
 	private String mobile;
-	@Column(name = "user_email")
+	@Column(name = "user_email", unique = true)
 	private String email;
-	@Column(name = "user_first_name")
+	@Column(name = "user_first_name", unique = true)
 	private String firstName;
-	@Column(name = "user_last_name")
+	@Column(name = "user_last_name", unique = true)
 	private String lastName;
-	@Column(name = "user_education")
+	@Column(name = "user_education", unique = true)
 	private String education;
-	@Column(name = "user_opted_classes")
+	@Column(name = "user_opted_classes", unique = true)
 	private String optedClasses;
-	@Column(name = "user_city")
+	@Column(name = "user_city", unique = true)
 	private String city;
-	@Column(name = "user_district")
+	@Column(name = "user_district", unique = true)
 	private String district;
-	@Column(name = "user_state")
+	@Column(name = "user_state", unique = true)
 	private String state;
-	@Column(name = "user_pin_code")
+	@Column(name = "user_pin_code", unique = true)
 	private String pincode;
-	@Column(name = "user_address_role")
+	@Column(name = "user_address_role", unique = true)
 	private String addressRole;
-	@Column(name = "user_is_active")
+	@Column(name = "user_is_active", unique = true)
 	private Boolean isActive;
-	@Column(name = "user_is_deleted")
+	@Column(name = "user_is_deleted", unique = true)
 	private Boolean isDeleted;
-	@Column(name = "user_is_mobile_verified")
+	@Column(name = "user_is_mobile_verified", unique = true)
 	private Boolean isMobileVerified;
-	@Column(name = "is_email_verified")
+	@Column(name = "is_email_verified", unique = true)
 	private Boolean isEmailVerified;
-	@Column(name = "email_otp")
+	@Column(name = "email_otp", unique = true)
 	private String emailOtp;
-	@Column(name = "user_mobile_otp")
+	@Column(name = "user_mobile_otp", unique = true)
 	private String mobileOtp;
-	@Column(name = "email_otp_generated_at")
+	@Column(name = "email_otp_generated_at", unique = true)
 	private LocalDateTime emailOtpGeneratedAt;
-	@Column(name = "user_mobile_otp_generated_at")
+	@Column(name = "user_mobile_otp_generated_at", unique = true)
 	private LocalDateTime mobileOtpGeneratedAt;
-	@Column(name = "user_fcm_token")
+	@Column(name = "user_fcm_token", unique = true)
 	private String fcmToken;
-	@Column(name = "user_created_at")
+	@Column(name = "user_created_at", unique = true)
 	private LocalDateTime createdAt;
-	@Column(name = "created_by")
+	@Column(name = "created_by", unique = true)
 	private String createdBy;
-	@Column(name = "updated_by")
+	@Column(name = "updated_by", unique = true)
 	private String updatedBy;
-	@Column(name = "updated_at")
+	@Column(name = "updated_at", unique = true)
 	private LocalDateTime updatedAt;
-	@Column(name = "google_id")
+	@Column(name = "google_id", unique = true)
 	private String googleId;
 
 	@PrePersist
-	public void generateDefaults() {
+	public void prePersistCallback() {
+		if (this.mobile != null && !this.mobile.isEmpty()) {
+			this.mobile = formatMobile(this.mobile);
+		}
+
 		Random random = new Random();
 		int otp = 1000 + random.nextInt(9000);
 
-		this.mobileOtp = String.valueOf(otp);
-		this.emailOtp = String.valueOf(otp);
-		this.mobileOtpGeneratedAt = LocalDateTime.now();
-		this.emailOtpGeneratedAt = LocalDateTime.now();
-		this.createdAt = LocalDateTime.now();
-		this.updatedAt = LocalDateTime.now();
+		if (this.mobileOtp == null) {
+			this.mobileOtp = String.valueOf(otp);
+			this.mobileOtpGeneratedAt = LocalDateTime.now();
+		}
+		if (this.emailOtp == null) {
+			this.emailOtp = String.valueOf(otp);
+			this.emailOtpGeneratedAt = LocalDateTime.now();
+		}
+
+		if (this.createdAt == null) {
+			this.createdAt = LocalDateTime.now();
+		}
+
 		if (this.fcmToken == null || this.fcmToken.isEmpty()) {
 			this.fcmToken = UUID.randomUUID().toString();
 		}
+	}
+
+	@PreUpdate
+	public void preUpdateCallback() {
+		if (this.mobile != null && !this.mobile.isEmpty()) {
+			this.mobile = formatMobile(this.mobile);
+		}
+		this.updatedAt = LocalDateTime.now();
 	}
 
 	public Long getId() {
@@ -101,20 +120,21 @@ public class UserEntity {
 	}
 
 	public void setMobile(String mobile) {
-		if (mobile == null || mobile.isEmpty()) {
-			throw new IllegalArgumentException("Mobile number cannot be null or empty");
+		if (mobile == null || mobile.trim().isEmpty()) {
+			throw new IllegalArgumentException("Mobile number is required");
 		}
+		this.mobile = formatMobile(mobile);
+	}
 
+	private String formatMobile(String mobile) {
 		String cleaned = mobile.replaceAll("\\D+", "");
 
 		if (cleaned.length() == 12 && cleaned.startsWith("91")) {
-			cleaned = cleaned.substring(2);
-		}
-
-		if (cleaned.length() == 10) {
-			this.mobile = "+91" + cleaned;
+			return "+" + cleaned;
+		} else if (cleaned.length() == 10) {
+			return "+91" + cleaned;
 		} else {
-			throw new IllegalArgumentException("Invalid mobile number. Must be 10 digits or start with +91");
+			throw new IllegalArgumentException("Invalid mobile number: must be 10 digits or in +91XXXXXXXXXX format");
 		}
 	}
 
@@ -317,7 +337,7 @@ public class UserEntity {
 			LocalDateTime createdAt, String createdBy, String updatedBy, LocalDateTime updatedAt, String googleId) {
 		super();
 		this.id = id;
-		this.mobile = mobile;
+		setMobile(mobile);
 		this.email = email;
 		this.firstName = firstName;
 		this.lastName = lastName;
@@ -347,5 +367,4 @@ public class UserEntity {
 	public UserEntity() {
 		super();
 	}
-
 }

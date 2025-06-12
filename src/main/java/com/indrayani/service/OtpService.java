@@ -82,12 +82,10 @@ public class OtpService {
 	}
 
 	public String generateOtp(String mobile) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public void sendOtp(String mobile, String otp) {
-		// TODO Auto-generated method stub
 
 	}
 }
