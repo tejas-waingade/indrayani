@@ -1,6 +1,9 @@
 package com.indrayani.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Random;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,16 +18,13 @@ import com.indrayani.repository.UserRepository;
 public class UserService {
 
 	@Autowired
-	private  UserRepository userRepository;
+	private UserRepository userRepository;
+
 	@Autowired
 	private UserMapper userMapper;
 
-	 
 	private UserDTO convertEntityToDto(UserEntity userEntity) {
 		return userMapper.toDTO(userEntity);
-	}
-
-	public void save(UserEntity userEntity) {
 	}
 
 	public List<UserDTO> getAllUsers() {
@@ -36,22 +36,38 @@ public class UserService {
 	}
 
 	public UserDTO addUser(UserDTO userDTO) {
+
+		if (userRepository.existsByMobile(userDTO.getMobile())) {
+			throw new RuntimeException("Mobile number already exists");
+		}
+		if (userRepository.existsByEmail(userDTO.getEmail())) {
+			throw new RuntimeException("Email already exists");
+		}
+
 		UserEntity userEntity = userMapper.toEntity(userDTO);
-		UserEntity userEntityObj = userRepository.save(userEntity);
-		UserDTO useDto = userMapper.toDTO(userEntityObj);
-		return useDto;
+
+		String otp = String.format("%04d", new Random().nextInt(10000));
+		LocalDateTime now = LocalDateTime.now();
+
+		userEntity.setEmailOtp(otp);
+		userEntity.setMobileOtp(otp);
+		userEntity.setEmailOtpGeneratedAt(now);
+		userEntity.setMobileOtpGeneratedAt(now);
+		userEntity.setCreatedAt(now);
+		userEntity.setFcmToken("fcmToken" + UUID.randomUUID());
+		userEntity.setGoogleId("google-" + UUID.randomUUID());
+
+		UserEntity saved = userRepository.save(userEntity);
+		return userMapper.toDTO(saved);
 	}
 
 	public UserEntity updateUserById(Long id, UserEntity userEntity) {
-
-		boolean isExist = userRepository.existsById(id);
-		if (isExist) {
+		if (userRepository.existsById(id)) {
 			userEntity.setId(id);
+			userEntity.setUpdatedAt(LocalDateTime.now());
 			return userRepository.save(userEntity);
-		} else {
-			return null;
 		}
-
+		return null;
 	}
 
 	public void deleteUserById(Long id) {

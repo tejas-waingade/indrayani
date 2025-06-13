@@ -7,16 +7,23 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 
 public class UserDTO {
+
+	private Long id;
+
 	@NotBlank(message = "Mobile number is required")
-	@Pattern(regexp = "^(\\+91)?[6-9]\\d{9}$", message = "Invalid Indian mobile number format. Must be 10 digits or start with +91 followed by 10 digits.")
+	@Pattern(regexp = "^(\\+91)?[6-9]\\d{9}$", message = "Must be 10 digits or start with +91 followed by 10 digits.")
 	private String mobile;
+
 	@NotBlank(message = "Email is required")
 	@Email(message = "Invalid email format")
 	private String email;
+
 	@NotBlank(message = "First name is required")
 	private String firstName;
+
 	@NotBlank(message = "Last name is required")
 	private String lastName;
+
 	private String education;
 	private String optedClasses;
 	private String city;
@@ -38,6 +45,14 @@ public class UserDTO {
 	private String updatedBy;
 	private LocalDateTime updatedAt;
 	private String googleId;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 	public String getMobile() {
 		return mobile;
@@ -239,12 +254,16 @@ public class UserDTO {
 		this.googleId = googleId;
 	}
 
-	public UserDTO(String mobile, String email, String firstName, String lastName, String education,
+	// Constructors
+	public UserDTO() {
+	}
+
+	public UserDTO(Long id, String mobile, String email, String firstName, String lastName, String education,
 			String optedClasses, String city, String district, String state, String pincode, String addressRole,
 			Boolean isActive, Boolean isDeleted, Boolean isMobileVerified, Boolean isEmailVerified, String emailOtp,
 			String mobileOtp, LocalDateTime emailOtpGeneratedAt, LocalDateTime mobileOtpGeneratedAt, String fcmToken,
 			LocalDateTime createdAt, String createdBy, String updatedBy, LocalDateTime updatedAt, String googleId) {
-		super();
+		this.id = id;
 		this.mobile = mobile;
 		this.email = email;
 		this.firstName = firstName;
@@ -270,15 +289,5 @@ public class UserDTO {
 		this.updatedBy = updatedBy;
 		this.updatedAt = updatedAt;
 		this.googleId = googleId;
-	}
-
-	public UserDTO() {
-	}
-
-	public void setId(Long id) {
-	}
-
-	public Long getId() {
-		return null;
 	}
 }

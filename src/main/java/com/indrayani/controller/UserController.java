@@ -41,10 +41,13 @@ public class UserController {
 	}
 
 	@PostMapping
-	public ResponseEntity<UserDTO> addUser(@RequestBody UserDTO userDTO) {
-		UserDTO userDTOObj = userService.addUser(userDTO);
-		return new ResponseEntity<>(userDTOObj, HttpStatus.CREATED);
-
+	public ResponseEntity<?> addUser(@RequestBody UserDTO userDTO) {
+		try {
+			UserDTO userDTOObj = userService.addUser(userDTO);
+			return new ResponseEntity<>(userDTOObj, HttpStatus.CREATED);
+		} catch (IllegalArgumentException ex) {
+			return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
+		}
 	}
 
 	@PutMapping("/{id}")

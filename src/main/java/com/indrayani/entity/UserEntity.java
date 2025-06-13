@@ -21,9 +21,9 @@ public class UserEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "mobile", unique = true)
+	@Column(name = "mobile", unique = true,nullable = false)
 	private String mobile;
-	@Column(name = "user_email", unique = true)
+	@Column(name = "user_email", unique = true,nullable = false)
 	private String email;
 	@Column(name = "user_first_name", unique = true)
 	private String firstName;
@@ -59,7 +59,7 @@ public class UserEntity {
 	private LocalDateTime emailOtpGeneratedAt;
 	@Column(name = "user_mobile_otp_generated_at", unique = true)
 	private LocalDateTime mobileOtpGeneratedAt;
-	@Column(name = "user_fcm_token", unique = true)
+	@Column(name = "user_fcm_token", unique = true,nullable = true)
 	private String fcmToken;
 	@Column(name = "user_created_at", unique = true)
 	private LocalDateTime createdAt;
@@ -67,16 +67,25 @@ public class UserEntity {
 	private String createdBy;
 	@Column(name = "updated_by", unique = true)
 	private String updatedBy;
-	@Column(name = "updated_at", unique = true)
+	@Column(name = "user_updated_at", unique = true)
 	private LocalDateTime updatedAt;
-	@Column(name = "google_id", unique = true)
+	@Column(name = "google_id", unique = true, nullable = true)
 	private String googleId;
 
 	@PrePersist
 	public void prePersistCallback() {
+		
+		if (this.googleId == null || this.googleId.isEmpty()) {
+			this.googleId = "google-" + UUID.randomUUID().toString();
+		}
+
+		if (this.fcmToken == null || this.fcmToken.isEmpty()) {
+			this.fcmToken = "fcmToken" + UUID.randomUUID().toString();
+		}
 		if (this.mobile != null && !this.mobile.isEmpty()) {
 			this.mobile = formatMobile(this.mobile);
 		}
+		
 
 		Random random = new Random();
 		int otp = 1000 + random.nextInt(9000);
